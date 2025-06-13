@@ -4,9 +4,13 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:go_green/constants.dart';
 import 'package:go_green/game/go_green_game.dart';
-// import 'package:vector_math/vector_math_64.dart';
+import 'package:go_green/utils/functions.dart';
 
-class Player extends SpriteComponent with HasGameReference<GoGreenGame> {
+class BlackHole extends SpriteComponent with HasGameReference<GoGreenGame> {
+  static const blackHoleHeight = 150.0;
+  static const blackHoleWidth = 150.0;
+  static const blackHoleSpeed = 250.0;
+
   final _random = Random();
 
   late final double top;
@@ -18,23 +22,24 @@ class Player extends SpriteComponent with HasGameReference<GoGreenGame> {
 
   @override
   FutureOr<void> onLoad() async {
-    sprite = await Sprite.load(ImageSrc.player);
-    size = Vector2.all(playerSize);
-    position = Vector2(0, (gameHeight / 2) - (playerSize / 2));
+    top = -(game.size.y / 2) + (blackHoleHeight / 3.5);
+    bottom = (game.size.y / 2) - (blackHoleHeight / 3.5);
+    left = -(game.size.x / 2) + (blackHoleWidth / 3.5);
+    right = (game.size.x / 2) - (blackHoleWidth / 3.5);
+
+    sprite = await Sprite.load(ImageSrc.blackHole);
+    size = Vector2(blackHoleWidth, blackHoleHeight);
+    position = Vector2(randomBetween(left, right), randomBetween(bottom, top));
     anchor = Anchor.center;
     direction = Vector2(0, -1);
-
-    top = -(game.size.y / 2) + (playerSize / 2);
-    bottom = (game.size.y / 2) - (playerSize / 2);
-    left = -(game.size.x / 2) + (playerSize / 2);
-    right = (game.size.x / 2) - (playerSize / 2);
+    direction.rotate(randomBetween(0, pi * 2));
   }
 
   @override
   void update(double dt) {
     super.update(dt);
 
-    final velocity = direction.normalized() * (dt * playerSpeed);
+    final velocity = direction.normalized() * (dt * blackHoleSpeed);
     Vector2 newPosition = position + velocity;
 
     // Check collision with bounds and reflect
