@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:go_green/constants.dart';
 import 'package:go_green/game/go_green_game.dart';
@@ -33,6 +34,15 @@ class BlackHole extends SpriteComponent with HasGameReference<GoGreenGame> {
     anchor = Anchor.center;
     direction = Vector2(0, -1);
     direction.rotate(randomBetween(0, pi * 2));
+
+    add(
+      CircleHitbox.relative(
+        0.6,
+        parentSize: size,
+        position: size / 2,
+        anchor: Anchor.center,
+      )
+    );
   }
 
   @override

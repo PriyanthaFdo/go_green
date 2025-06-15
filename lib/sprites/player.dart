@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:go_green/constants.dart';
 import 'package:go_green/game/go_green_game.dart';
@@ -31,6 +32,7 @@ class Player extends SpriteComponent with HasGameReference<GoGreenGame> {
     position = Vector2(0, bottom);
     anchor = Anchor.center;
     direction = Vector2(0, -1);
+    add(CircleHitbox());
   }
 
   @override
