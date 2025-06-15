@@ -5,6 +5,8 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:go_green/constants.dart';
 import 'package:go_green/game/go_green_game.dart';
+import 'package:go_green/sprites/black_hole.dart';
+import 'package:go_green/sprites/player.dart';
 import 'package:go_green/utils/functions.dart';
 
 class Asteroid extends SpriteComponent with HasGameReference<GoGreenGame>, CollisionCallbacks {
@@ -81,7 +83,11 @@ class Asteroid extends SpriteComponent with HasGameReference<GoGreenGame>, Colli
 
   @override
   void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
-    if (other is! Asteroid) {
+    if(other is Player){
+      game.incrementPlayerScore();
+      removeFromParent();
+    }else if(other is BlackHole){
+      game.decrementPlayerScore();
       removeFromParent();
     }
     super.onCollisionStart(intersectionPoints, other);

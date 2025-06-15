@@ -5,8 +5,9 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:go_green/constants.dart';
 import 'package:go_green/game/go_green_game.dart';
+import 'package:go_green/sprites/black_hole.dart';
 
-class Player extends SpriteComponent with HasGameReference<GoGreenGame> {
+class Player extends SpriteComponent with HasGameReference<GoGreenGame>, CollisionCallbacks {
   static const playerHeight = 100.0;
   static const playerWidth = 100.0;
   static const playerSpeed = 200.0;
@@ -33,6 +34,15 @@ class Player extends SpriteComponent with HasGameReference<GoGreenGame> {
     anchor = Anchor.center;
     direction = Vector2(0, -1);
     add(CircleHitbox());
+  }
+
+  @override
+  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+    if(other is BlackHole){
+      removeFromParent();
+    }
+
+    super.onCollisionStart(intersectionPoints, other);
   }
 
   @override

@@ -9,6 +9,8 @@ import 'package:go_green/constants.dart';
 import 'package:go_green/game/go_green_world.dart';
 
 class GoGreenGame extends FlameGame<GoGreenWorld> with HorizontalDragDetector, VerticalDragDetector, KeyboardEvents, HasCollisionDetection {
+  int _playerScore = 0;
+
   GoGreenGame()
     : super(
         world: GoGreenWorld(),
@@ -64,5 +66,15 @@ class GoGreenGame extends FlameGame<GoGreenWorld> with HorizontalDragDetector, V
     }
 
     return KeyEventResult.ignored;
+  }
+
+  void incrementPlayerScore() {
+    _playerScore++;
+    print('Player score +1: $_playerScore');
+  }
+
+  void decrementPlayerScore() {
+    _playerScore--;
+    print('Player score -1: $_playerScore');
   }
 }
