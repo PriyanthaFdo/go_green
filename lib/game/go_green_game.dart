@@ -10,6 +10,7 @@ import 'package:go_green/game/go_green_world.dart';
 
 class GoGreenGame extends FlameGame<GoGreenWorld> with HorizontalDragDetector, VerticalDragDetector, KeyboardEvents, HasCollisionDetection {
   int _playerScore = 0;
+  final Set<LogicalKeyboardKey> keysHeld = {};
 
   GoGreenGame()
     : super(
@@ -45,27 +46,41 @@ class GoGreenGame extends FlameGame<GoGreenWorld> with HorizontalDragDetector, V
 
   @override
   KeyEventResult onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    const keyEventSpeed = 20.0;
+    final key = event.logicalKey;
 
-    if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
-        world.player.move(Vector2(-keyEventSpeed, 0));
-        return KeyEventResult.handled;
-      } else if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
-        world.player.move(Vector2(keyEventSpeed, 0));
-        return KeyEventResult.handled;
-      }
-
-      if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
-        world.player.move(Vector2(0, -keyEventSpeed));
-        return KeyEventResult.handled;
-      } else if (keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
-        world.player.move(Vector2(0, keyEventSpeed));
-        return KeyEventResult.handled;
-      }
+    if (event is KeyDownEvent) {
+      keysHeld.add(key);
+    } else if (event is KeyUpEvent) {
+      keysHeld.remove(key);
     }
 
-    return KeyEventResult.ignored;
+    return KeyEventResult.handled;
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    const double speed = 220.0;
+    Vector2 direction = Vector2.zero();
+
+    if (keysHeld.contains(LogicalKeyboardKey.arrowLeft)) {
+      direction.x -= 1;
+    }
+    if (keysHeld.contains(LogicalKeyboardKey.arrowRight)) {
+      direction.x += 1;
+    }
+    if (keysHeld.contains(LogicalKeyboardKey.arrowUp)) {
+      direction.y -= 1;
+    }
+    if (keysHeld.contains(LogicalKeyboardKey.arrowDown)) {
+      direction.y += 1;
+    }
+
+    if (direction != Vector2.zero()) {
+      direction.normalize();
+      world.player.move(direction * speed * dt);
+    }
   }
 
   void incrementPlayerScore() {
